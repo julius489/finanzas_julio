@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haber — Finanzas personales con calma</title>
+<meta name="description" content="Acompañamiento de finanzas personales: presupuesto, deudas, fondo de emergencia e inversión ordenada. Sesiones uno a uno y a tu ritmo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Inter:wght@300;400;500&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --hueso:#FBFAF6;
+  --crema:#EFE7D6;
+  --crema-2:#E4DAC4;
+  --bosque:#183A28;
+  --bosque-2:#204a34;
+  --verde:#2F6B47;
+  --menta:#C2DDCB;
+  --menta-luz:#E8F1EB;
+  --gris:#63706A;
+  --linea:rgba(24,58,40,.15);
+
+  --display:'Fraunces',Georgia,serif;
+  --texto:'Inter',system-ui,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+
+  --marco:clamp(20px,5vw,72px);
+  --aire:clamp(76px,12vw,152px);
+}
+
+/* ---------- base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--hueso);color:var(--bosque);
+  font-family:var(--texto);font-weight:300;font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+h1,h2,h3{font-family:var(--display);font-weight:300;letter-spacing:-.02em;line-height:1.04;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.9rem,9vw,6.6rem)}
+h2{font-size:clamp(2.1rem,6vw,4.2rem)}
+h3{font-size:clamp(1.3rem,2.6vw,1.65rem);letter-spacing:-.01em}
+p{margin:0}
+
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--verde)}
+.marco{padding-inline:var(--marco);max-width:1400px;margin-inline:auto}
+:focus-visible{outline:2px solid var(--verde);outline-offset:4px;border-radius:2px}
+
+/* ---------- header ---------- */
+.site-head{position:fixed;inset:0 0 auto 0;z-index:60;transition:background .35s ease,border-color .35s ease;border-bottom:1px solid transparent}
+.site-head.is-scrolled{background:rgba(251,250,246,.92);backdrop-filter:blur(10px);border-bottom-color:var(--linea)}
+.head-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:74px}
+.marca{font-family:var(--display);font-weight:400;font-size:1.5rem;letter-spacing:-.01em}
+.marca span{color:var(--verde)}
+
+.nav-desk{display:none}
+.nav-desk a{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;padding-block:6px;position:relative}
+.nav-desk a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--verde);transition:width .3s ease}
+.nav-desk a:hover::after,.nav-desk a:focus-visible::after{width:100%}
+
+.btn-menu{display:flex;flex-direction:column;gap:5px;padding:10px 2px}
+.btn-menu i{display:block;width:24px;height:1.5px;background:var(--bosque);transition:transform .3s ease,opacity .25s ease}
+.btn-menu.is-open i:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.btn-menu.is-open i:nth-child(2){opacity:0}
+.btn-menu.is-open i:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+.panel-nav{position:fixed;inset:74px 0 auto 0;z-index:55;background:var(--hueso);border-bottom:1px solid var(--linea);padding:8px var(--marco) 32px;display:grid;gap:2px;transform:translateY(-8px);opacity:0;pointer-events:none;transition:opacity .28s ease,transform .28s ease}
+.panel-nav.is-open{transform:none;opacity:1;pointer-events:auto}
+.panel-nav a{font-family:var(--display);font-weight:300;font-size:2rem;padding-block:10px;border-bottom:1px solid var(--linea)}
+.panel-nav a:last-child{border-bottom:0}
+
+/* ---------- botones ---------- */
+.cta{display:inline-flex;align-items:center;gap:12px;font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;padding:15px 26px;border-radius:100px;background:var(--bosque);color:var(--hueso);transition:background .3s ease,transform .3s ease}
+.cta:hover{background:var(--verde);transform:translateY(-2px)}
+.cta--linea{background:transparent;color:var(--bosque);border:1px solid var(--linea)}
+.cta--linea:hover{background:var(--menta-luz)}
+.cta i{width:16px;height:1px;background:currentColor;display:block;transition:width .3s ease}
+.cta:hover i{width:26px}
+
+/* ---------- hero ---------- */
+.hero{padding-top:120px;padding-bottom:var(--aire)}
+.hero-grid{display:grid;gap:48px}
+.hero h1{margin-top:22px}
+.hero h1 em{font-style:italic;color:var(--verde)}
+.hero-bajada{max-width:42ch;margin-top:28px;color:var(--gris);font-size:1.05rem}
+.hero-acciones{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}
+.hero-nota{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;color:var(--gris);margin-top:22px}
+
+/* panel visual del hero: crecimiento del ahorro */
+.panel{background:var(--menta-luz);border:1px solid var(--linea);border-radius:22px;padding:clamp(20px,4vw,30px)}
+.panel-cab{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+.panel-cab .et{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--verde)}
+.panel-cifra{font-family:var(--display);font-weight:300;font-size:clamp(2.2rem,6vw,3.1rem);letter-spacing:-.02em;line-height:1}
+.panel-cifra small{font-size:.9rem;color:var(--gris);font-family:var(--mono);letter-spacing:0}
+.panel-svg{width:100%;height:auto;margin-top:6px}
+.g-area{fill:url(#degVerde)}
+.g-linea{fill:none;stroke:var(--verde);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:640;stroke-dashoffset:640;animation:trazo 2s .3s cubic-bezier(.22,.7,.25,1) forwards}
+@keyframes trazo{to{stroke-dashoffset:0}}
+.g-base{stroke:var(--linea);stroke-width:1}
+.g-punto{fill:var(--verde);opacity:0;animation:aparece .4s 2.1s forwards}
+@keyframes aparece{to{opacity:1}}
+.g-eje{font-family:var(--mono);font-size:9px;fill:var(--gris)}
+.panel-pie{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px;padding-top:14px;border-top:1px solid var(--linea)}
+.panel-pie span{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--gris)}
+.panel-pie b{color:var(--bosque)}
+
+/* franja de datos */
+.franja{display:flex;flex-wrap:wrap;gap:26px 44px;margin-top:44px;padding-top:26px;border-top:1px solid var(--linea)}
+.franja div{max-width:26ch}
+.franja .num{font-family:var(--display);font-weight:300;font-size:clamp(2rem,4.5vw,2.6rem);letter-spacing:-.02em;line-height:1}
+.franja .rot{font-size:.92rem;color:var(--gris);margin-top:6px}
+
+/* ---------- servicios ---------- */
+.servicios{background:var(--crema);padding-block:var(--aire);border-block:1px solid var(--linea)}
+.cab{display:grid;gap:16px;margin-bottom:56px}
+.cab p{max-width:46ch;color:var(--gris)}
+.serv-lista{list-style:none;margin:0;padding:0;border-top:1px solid var(--linea)}
+.serv-lista li{border-bottom:1px solid var(--linea)}
+.serv-fila{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:26px 4px;text-align:left;transition:padding-left .3s ease}
+.serv-fila:hover,.serv-fila[aria-expanded="true"]{padding-left:14px}
+.serv-idx{font-family:var(--mono);font-size:.78rem;color:var(--verde)}
+.serv-nom{font-family:var(--display);font-weight:300;font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:-.01em}
+.serv-mas{width:22px;height:22px;position:relative;flex:none}
+.serv-mas::before,.serv-mas::after{content:"";position:absolute;background:var(--bosque);transition:transform .3s ease,opacity .3s ease}
+.serv-mas::before{inset:10px 0 auto 0;height:1.5px}
+.serv-mas::after{inset:0 auto 0 10px;width:1.5px}
+.serv-fila[aria-expanded="true"] .serv-mas::after{transform:scaleY(0);opacity:0}
+.serv-panel{overflow:hidden;max-height:0;transition:max-height .4s ease}
+.serv-panel-in{padding:0 4px 30px 42px;display:grid;gap:20px}
+.serv-panel p{color:var(--gris);max-width:52ch}
+.serv-detalles{display:flex;flex-wrap:wrap;gap:8px 10px}
+.chip{font-family:var(--mono);font-size:.7rem;letter-spacing:.03em;color:var(--bosque);background:var(--menta-luz);border:1px solid var(--linea);border-radius:100px;padding:6px 13px}
+.serv-precio{font-family:var(--mono);font-size:.8rem;color:var(--verde)}
+
+/* ---------- proceso ---------- */
+.proceso{padding-block:var(--aire)}
+.pasos{list-style:none;margin:56px 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--linea)}
+.pasos li{display:grid;grid-template-columns:70px 1fr;gap:18px;padding:26px 0;border-bottom:1px solid var(--linea);align-items:start}
+.pasos .p-idx{font-family:var(--mono);font-size:.78rem;color:var(--verde);padding-top:5px}
+.pasos h3{font-weight:400}
+.pasos p{color:var(--gris);font-size:.95rem;margin-top:6px;max-width:48ch}
+
+/* ---------- sobre nosotros ---------- */
+.sobre{background:var(--bosque);color:var(--hueso);padding-block:var(--aire)}
+.sobre .eyebrow{color:var(--menta)}
+.sobre h2{color:var(--hueso)}
+.sobre-grid{display:grid;gap:44px}
+.sobre-texto p{color:rgba(251,250,246,.78);max-width:54ch}
+.sobre-texto p+p{margin-top:20px}
+.firma{font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;color:var(--menta);margin-top:32px}
+.valores{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid rgba(251,250,246,.22)}
+.valores li{padding:24px 0;border-bottom:1px solid rgba(251,250,246,.22)}
+.valores h3{color:var(--hueso);font-weight:400;font-size:1.2rem;margin-bottom:6px}
+.valores p{color:rgba(251,250,246,.72);font-size:.94rem;max-width:40ch}
+.credo{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:44px;padding-top:26px;border-top:1px solid rgba(251,250,246,.22)}
+.credo span{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--menta)}
+
+/* ---------- contacto ---------- */
+.contacto{padding-block:var(--aire)}
+.contacto-grid{display:grid;gap:52px}
+.info-bloque{border-top:1px solid var(--linea);padding-top:18px;margin-top:26px}
+.info-bloque dt{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
+.info-bloque dd{margin:6px 0 0;font-size:1.05rem}
+form{display:grid;gap:26px}
+.campo{display:grid;gap:8px}
+.campo label{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--verde)}
+.campo input,.campo textarea,.campo select{font-family:var(--texto);font-size:1rem;font-weight:300;color:var(--bosque);background:transparent;border:0;border-bottom:1px solid var(--linea);padding:10px 0;border-radius:0;transition:border-color .3s ease}
+.campo textarea{resize:vertical;min-height:84px}
+.campo input:focus,.campo textarea:focus,.campo select:focus{outline:none;border-bottom-color:var(--verde)}
+.campo input::placeholder,.campo textarea::placeholder{color:var(--gris);opacity:.6}
+.dupla{display:grid;gap:26px}
+.error{font-family:var(--mono);font-size:.7rem;color:#B0442B;min-height:1em}
+.campo.malo input,.campo.malo select,.campo.malo textarea{border-bottom-color:#B0442B}
+.cta-form{justify-self:start}
+.confirmacion{border:1px solid var(--linea);background:var(--menta-luz);border-radius:18px;padding:34px;display:none}
+.confirmacion.visible{display:block}
+.confirmacion h3{margin-bottom:12px;font-weight:400}
+.confirmacion p{color:var(--gris);max-width:42ch}
+.confirmacion button{margin-top:24px;font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;color:var(--verde);border-bottom:1px solid var(--verde);padding-bottom:3px}
+form.oculto{display:none}
+
+/* ---------- footer ---------- */
+.pie{padding-block:56px 40px;background:var(--hueso)}
+.pie-top{display:grid;gap:32px;padding-bottom:36px;border-bottom:1px solid var(--linea)}
+.pie h3{font-size:clamp(2rem,6.5vw,3.2rem);max-width:15ch;font-weight:300}
+.pie-links{display:grid;gap:8px;font-family:var(--mono);font-size:.78rem;letter-spacing:.05em;align-content:start}
+.pie-links a{color:var(--gris);transition:color .25s ease}
+.pie-links a:hover{color:var(--verde)}
+.pie-bajo{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;padding-top:26px;font-family:var(--mono);font-size:.7rem;letter-spacing:.05em;color:var(--gris)}
+.aviso{max-width:70ch;margin-top:20px;font-family:var(--mono);font-size:.68rem;line-height:1.7;color:var(--gris)}
+
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,.7,.25,1)}
+.reveal.visto{opacity:1;transform:none}
+
+/* ---------- responsive ---------- */
+@media (min-width:720px){
+  .dupla{grid-template-columns:1fr 1fr}
+  .pie-top{grid-template-columns:1.4fr 1fr;align-items:end}
+  .cab{grid-template-columns:1fr 1fr;align-items:end;gap:40px}
+}
+@media (min-width:960px){
+  .btn-menu{display:none}
+  .nav-desk{display:flex;gap:38px;align-items:center}
+  .hero{padding-top:172px}
+  .hero-grid{grid-template-columns:1.15fr .85fr;align-items:center;gap:64px}
+  .proceso-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:start}
+  .sobre-grid{grid-template-columns:1.1fr .9fr;gap:80px;align-items:start}
+  .contacto-grid{grid-template-columns:.8fr 1.2fr;gap:80px}
+  .pasos li{grid-template-columns:92px 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0ms!important;transition-duration:.001ms!important}
+  .reveal{opacity:1;transform:none}
+  .g-linea{stroke-dashoffset:0}
+  .g-punto{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<header class="site-head" id="cabecera">
+  <div class="marco head-in">
+    <a href="#inicio" class="marca">Haber<span>.</span></a>
+    <nav class="nav-desk" aria-label="Principal">
+      <a href="#servicios">Servicios</a>
+      <a href="#proceso">Cómo trabajamos</a>
+      <a href="#sobre">Nosotros</a>
+      <a href="#contacto" class="cta">Agendar sesión <i></i></a>
+    </nav>
+    <button class="btn-menu" id="btnMenu" aria-expanded="false" aria-controls="panelNav" aria-label="Abrir menú">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<nav class="panel-nav" id="panelNav" aria-label="Menú móvil">
+  <a href="#servicios">Servicios</a>
+  <a href="#proceso">Cómo trabajamos</a>
+  <a href="#sobre">Nosotros</a>
+  <a href="#contacto">Agendar sesión</a>
+</nav>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero marco" id="inicio">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Finanzas personales · a tu ritmo</p>
+        <h1>Ordena tu dinero <em>sin ansiedad</em>.</h1>
+        <p class="hero-bajada">Acompañamiento uno a uno para armar tu presupuesto, salir de deudas y empezar a invertir con calma. Nada de fórmulas mágicas: un plan que entiendes y que puedes sostener.</p>
+        <div class="hero-acciones">
+          <a href="#contacto" class="cta">Agendar sesión <i></i></a>
+          <a href="#servicios" class="cta cta--linea">Ver servicios <i></i></a>
+        </div>
+        <p class="hero-nota">Primera conversación de 20 minutos sin costo · educación financiera, no venta de productos</p>
+      </div>
+
+      <div class="panel" aria-label="Ejemplo de crecimiento del ahorro con aportes constantes">
+        <div class="panel-cab">
+          <span class="et">Ejemplo · ahorro mensual</span>
+          <span class="et">36 meses</span>
+        </div>
+        <div class="panel-cifra">S/ 21,600 <small>aportado</small></div>
+        <svg class="panel-svg" viewBox="0 0 520 240" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="degVerde" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2F6B47" stop-opacity=".22"></stop>
+              <stop offset="1" stop-color="#2F6B47" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <line class="g-base" x1="40" y1="200" x2="500" y2="200"></line>
+          <line class="g-base" x1="40" y1="200" x2="40" y2="24"></line>
+          <path class="g-area" id="areaPath" d=""></path>
+          <path class="g-linea" id="lineaPath" d=""></path>
+          <circle class="g-punto" id="puntoFin" r="4.5"></circle>
+          <text class="g-eje" x="40" y="216">mes 1</text>
+          <text class="g-eje" x="470" y="216">mes 36</text>
+        </svg>
+        <div class="panel-pie">
+          <span><b>S/ 600</b> aporte mensual</span>
+          <span><b>~6 %</b> anual estimado</span>
+          <span><b>S/ 23,800</b> valor proyectado</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="franja reveal">
+      <div>
+        <div class="num">3 pasos</div>
+        <p class="rot">Diagnóstico, plan y seguimiento. Sin planillas eternas.</p>
+      </div>
+      <div>
+        <div class="num">100 %</div>
+        <p class="rot">Tuyo. No vendemos seguros, fondos ni comisiones ocultas.</p>
+      </div>
+      <div>
+        <div class="num">A tu ritmo</div>
+        <p class="rot">Sesiones mensuales o puntuales, según lo que necesites.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICIOS ============ -->
+  <section class="servicios" id="servicios">
+    <div class="marco">
+      <div class="cab reveal">
+        <div>
+          <p class="eyebrow">Servicios</p>
+          <h2>Cuatro frentes, un mismo objetivo.</h2>
+        </div>
+        <p>Empezamos donde más aprieta y avanzamos por orden. Toca cada uno para ver qué incluye.</p>
+      </div>
+
+      <ul class="serv-lista reveal" id="servLista"></ul>
+    </div>
+  </section>
+
+  <!-- ============ PROCESO ============ -->
+  <section class="proceso marco" id="proceso">
+    <div class="proceso-grid">
+      <div class="reveal">
+        <p class="eyebrow">Cómo trabajamos</p>
+        <h2>Un método simple y sostenible.</h2>
+        <p style="margin-top:24px;color:var(--gris);max-width:40ch">No se trata de gastar menos en café. Se trata de entender a dónde va tu dinero y decidir con calma qué hacer con él.</p>
+      </div>
+
+      <ol class="pasos reveal">
+        <li>
+          <span class="p-idx">01</span>
+          <div>
+            <h3>Conversación inicial</h3>
+            <p>20 minutos para conocer tu situación, tus metas y qué te quita el sueño. Sin costo y sin compromiso.</p>
+          </div>
+        </li>
+        <li>
+          <span class="p-idx">02</span>
+          <div>
+            <h3>Diagnóstico</h3>
+            <p>Miramos juntos ingresos, gastos y deudas. Sale un mapa claro de en qué punto estás hoy.</p>
+          </div>
+        </li>
+        <li>
+          <span class="p-idx">03</span>
+          <div>
+            <h3>Plan a tu medida</h3>
+            <p>Un presupuesto realista, un orden para las deudas y una meta de fondo de emergencia que sí puedas cumplir.</p>
+          </div>
+        </li>
+        <li>
+          <span class="p-idx">04</span>
+          <div>
+            <h3>Seguimiento</h3>
+            <p>Revisiones mensuales para ajustar el rumbo y celebrar avances. Los hábitos se sostienen acompañados.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ SOBRE NOSOTROS ============ -->
+  <section class="sobre" id="sobre">
+    <div class="marco sobre-grid">
+      <div class="sobre-texto reveal">
+        <p class="eyebrow">Nosotros</p>
+        <h2>Educación, no productos.</h2>
+        <p style="margin-top:28px">Haber nació de una idea sencilla: la mayoría de la gente no necesita otro producto financiero, necesita entender el que ya tiene. Somos un pequeño equipo de educadores financieros que trabaja contigo, no con una comisión de por medio.</p>
+        <p>No recibimos pagos de bancos, aseguradoras ni fondos. Eso nos deja libres para decirte lo que de verdad te conviene, aunque a veces sea "eso no lo compres". Nuestro trabajo es que salgas de cada sesión sabiendo más y sintiéndote más tranquilo.</p>
+        <p class="firma">— Equipo Haber, educadores financieros independientes</p>
+        <div class="credo">
+          <span>· Sin comisiones de terceros</span>
+          <span>· Sin venta de productos</span>
+          <span>· Tú decides siempre</span>
+        </div>
+      </div>
+
+      <ul class="valores reveal">
+        <li>
+          <h3>Claridad</h3>
+          <p>Sin jerga. Si no lo entiendes, no sirve. Explicamos hasta que tenga sentido.</p>
+        </li>
+        <li>
+          <h3>Independencia</h3>
+          <p>No cobramos por recomendar nada. Nuestro único ingreso es tu sesión.</p>
+        </li>
+        <li>
+          <h3>Ritmo real</h3>
+          <p>Planes que aguantan la vida diaria, no metas imposibles que duran una semana.</p>
+        </li>
+        <li>
+          <h3>Reserva</h3>
+          <p>Lo que hablamos queda entre nosotros. Tus números son solo tuyos.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ CONTACTO ============ -->
+  <section class="contacto marco" id="contacto">
+    <div class="contacto-grid">
+      <div class="reveal">
+        <p class="eyebrow">Contacto</p>
+        <h2>Empecemos por una charla.</h2>
+        <p style="margin-top:24px;color:var(--gris);max-width:40ch">Cuéntanos en qué punto estás. Te respondemos en un día hábil para coordinar la primera conversación de 20 minutos, sin costo.</p>
+        <dl class="info-bloque">
+          <dt>Correo</dt>
+          <dd>hola@haber.pe</dd>
+        </dl>
+        <dl class="info-bloque">
+          <dt>WhatsApp</dt>
+          <dd>+51 900 000 000</dd>
+        </dl>
+        <dl class="info-bloque">
+          <dt>Atención</dt>
+          <dd>Lunes a viernes · sesiones en línea</dd>
+        </dl>
+      </div>
+
+      <div class="reveal">
+        <form id="formContacto" novalidate>
+          <div class="dupla">
+            <div class="campo">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Cómo te llamamos" autocomplete="name">
+              <span class="error" id="err-nombre" role="alert"></span>
+            </div>
+            <div class="campo">
+              <label for="correo">Correo</label>
+              <input type="email" id="correo" name="correo" placeholder="nombre@correo.com" autocomplete="email">
+              <span class="error" id="err-correo" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="tema">En qué te ayudamos</label>
+            <select id="tema" name="tema">
+              <option value="presupuesto">Armar mi presupuesto</option>
+              <option value="deudas">Ordenar mis deudas</option>
+              <option value="emergencia">Fondo de emergencia</option>
+              <option value="inversion">Empezar a invertir</option>
+              <option value="general">Aún no lo tengo claro</option>
+            </select>
+            <span class="error" id="err-tema" role="alert"></span>
+          </div>
+
+          <div class="campo">
+            <label for="mensaje">Tu situación en breve</label>
+            <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos lo esencial. No hace falta compartir cifras exactas todavía."></textarea>
+            <span class="error" id="err-mensaje" role="alert"></span>
+          </div>
+
+          <button type="submit" class="cta cta-form">Enviar y coordinar <i></i></button>
+        </form>
+
+        <div class="confirmacion" id="confirmacion" role="status" tabindex="-1">
+          <h3>Mensaje enviado</h3>
+          <p id="textoConfirma">Gracias. Te escribimos al correo en un día hábil para coordinar la primera charla.</p>
+          <button type="button" id="btnOtro">Enviar otro mensaje</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div class="marco">
+    <div class="pie-top">
+      <h3>Tu dinero, con calma y claridad.</h3>
+      <div class="pie-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#proceso">Cómo trabajamos</a>
+        <a href="#sobre">Nosotros</a>
+        <a href="#contacto">Contacto</a>
+        <a href="mailto:hola@haber.pe">hola@haber.pe</a>
+      </div>
+    </div>
+    <div class="pie-bajo">
+      <span>Haber · Educación financiera independiente</span>
+      <span>Lunes a viernes · sesiones en línea</span>
+      <span>© <span id="anio"></span> Haber</span>
+    </div>
+    <p class="aviso">Haber ofrece educación y acompañamiento financiero de carácter general. No constituye asesoría de inversión personalizada, recomendación de compra o venta de instrumentos financieros, ni servicio regulado por la SMV. Las cifras y proyecciones mostradas son ejemplos ilustrativos; los rendimientos pasados no garantizan resultados futuros. Cada persona decide sobre su propio dinero.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var NS = "http://www.w3.org/2000/svg";
+  var reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  document.getElementById("anio").textContent = new Date().getFullYear();
+
+  /* ---------- header ---------- */
+  var cabecera = document.getElementById("cabecera");
+  window.addEventListener("scroll", function(){
+    cabecera.classList.toggle("is-scrolled", window.scrollY > 20);
+  }, {passive:true});
+
+  /* ---------- menú móvil ---------- */
+  var btnMenu = document.getElementById("btnMenu");
+  var panelNav = document.getElementById("panelNav");
+  function cerrarMenu(){
+    btnMenu.classList.remove("is-open");
+    panelNav.classList.remove("is-open");
+    btnMenu.setAttribute("aria-expanded","false");
+    btnMenu.setAttribute("aria-label","Abrir menú");
+  }
+  btnMenu.addEventListener("click", function(){
+    var abierto = panelNav.classList.toggle("is-open");
+    btnMenu.classList.toggle("is-open", abierto);
+    btnMenu.setAttribute("aria-expanded", String(abierto));
+    btnMenu.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú");
+  });
+  panelNav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", cerrarMenu); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") cerrarMenu(); });
+
+  /* ---------- gráfico del hero (ahorro compuesto, ejemplo ilustrativo) ---------- */
+  (function(){
+    var meses = 36, aporte = 600, tasaMes = 0.06 / 12;
+    var pts = [], saldo = 0;
+    for(var m = 0; m <= meses; m++){
+      if(m > 0) saldo = saldo * (1 + tasaMes) + aporte;
+      pts.push(saldo);
+    }
+    var x0 = 40, x1 = 500, y0 = 200, y1 = 30;
+    var max = pts[pts.length - 1];
+    var coords = pts.map(function(v, i){
+      var x = x0 + (x1 - x0) * (i / meses);
+      var y = y0 - (y0 - y1) * (v / max);
+      return [x, y];
+    });
+    var d = coords.map(function(c, i){ return (i ? "L" : "M") + c[0].toFixed(1) + " " + c[1].toFixed(1); }).join(" ");
+    document.getElementById("lineaPath").setAttribute("d", d);
+    document.getElementById("areaPath").setAttribute("d", d + " L500 200 L40 200 Z");
+    var fin = coords[coords.length - 1];
+    var punto = document.getElementById("puntoFin");
+    punto.setAttribute("cx", fin[0].toFixed(1));
+    punto.setAttribute("cy", fin[1].toFixed(1));
+  })();
+
+  /* ---------- servicios (acordeón) ---------- */
+  var servicios = [
+    {
+      nombre: "Presupuesto que sí funciona",
+      precio: "Desde S/ 120 · sesión",
+      desc: "Armamos juntos un presupuesto realista a partir de tus ingresos y gastos reales, con un método simple que puedas mantener mes a mes.",
+      chips: ["Ingresos y gastos","Método 50/30/20","Sin planillas eternas"]
+    },
+    {
+      nombre: "Salir de deudas",
+      precio: "Desde S/ 150 · sesión",
+      desc: "Ordenamos tus deudas por prioridad, calculamos un plan de pago claro y definimos qué atacar primero para pagar menos intereses.",
+      chips: ["Orden de pago","Tasas e intereses","Plan mes a mes"]
+    },
+    {
+      nombre: "Fondo de emergencia",
+      precio: "Incluido en el plan",
+      desc: "Definimos cuánto necesitas guardar y a qué ritmo, para que un imprevisto deje de ser una crisis. Metas alcanzables, no cifras de manual.",
+      chips: ["Meta a tu medida","Dónde guardarlo","Ritmo sostenible"]
+    },
+    {
+      nombre: "Empezar a invertir",
+      precio: "Desde S/ 180 · sesión",
+      desc: "Educación clara sobre tus opciones para invertir en el Perú y afuera, según tu perfil y tus metas. Sin recomendarte un producto puntual: aprendes a decidir.",
+      chips: ["Perfil de riesgo","Opciones locales","Diversificación"]
+    }
+  ];
+
+  var lista = document.getElementById("servLista");
+  servicios.forEach(function(s, i){
+    var li = document.createElement("li");
+    var idx = String(i + 1).padStart(2, "0");
+    var pid = "sp-" + i;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "serv-fila";
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-controls", pid);
+    btn.innerHTML =
+      '<span class="serv-idx">' + idx + '</span>' +
+      '<span class="serv-nom"></span>' +
+      '<span class="serv-mas" aria-hidden="true"></span>';
+    btn.querySelector(".serv-nom").textContent = s.nombre;
+
+    var panel = document.createElement("div");
+    panel.className = "serv-panel";
+    panel.id = pid;
+    var chips = s.chips.map(function(c){
+      var sp = document.createElement("span");
+      sp.className = "chip";
+      sp.textContent = c;
+      return sp.outerHTML;
+    }).join("");
+    var pDesc = document.createElement("p");
+    pDesc.textContent = s.desc;
+    panel.innerHTML =
+      '<div class="serv-panel-in">' + pDesc.outerHTML +
+      '<div class="serv-detalles">' + chips + '</div>' +
+      '<span class="serv-precio">' + s.precio + '</span></div>';
+
+    btn.addEventListener("click", function(){
+      var abierto = btn.getAttribute("aria-expanded") === "true";
+      lista.querySelectorAll(".serv-fila").forEach(function(otro){
+        otro.setAttribute("aria-expanded", "false");
+        document.getElementById(otro.getAttribute("aria-controls")).style.maxHeight = null;
+      });
+      if(!abierto){
+        btn.setAttribute("aria-expanded", "true");
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+
+    li.appendChild(btn);
+    li.appendChild(panel);
+    lista.appendChild(li);
+  });
+
+  /* ---------- reveal ---------- */
+  var reveals = document.querySelectorAll(".reveal");
+  if(reducido || !("IntersectionObserver" in window)){
+    reveals.forEach(function(el){ el.classList.add("visto"); });
+  } else {
+    var obs = new IntersectionObserver(function(entradas){
+      entradas.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("visto"); obs.unobserve(e.target); }
+      });
+    }, {threshold: 0.12, rootMargin: "0px 0px -8% 0px"});
+    reveals.forEach(function(el){ obs.observe(el); });
+  }
+
+  /* ---------- formulario ---------- */
+  var form = document.getElementById("formContacto");
+  var confirmacion = document.getElementById("confirmacion");
+  var textoConfirma = document.getElementById("textoConfirma");
+
+  function marcar(id, mensaje){
+    var input = document.getElementById(id);
+    var campo = input.closest(".campo");
+    document.getElementById("err-" + id).textContent = mensaje || "";
+    campo.classList.toggle("malo", Boolean(mensaje));
+    return !mensaje;
+  }
+
+  function validar(){
+    var ok = true;
+    var nombre = document.getElementById("nombre").value.trim();
+    var correo = document.getElementById("correo").value.trim();
+    var mensaje = document.getElementById("mensaje").value.trim();
+    ok = marcar("nombre", nombre.length >= 2 ? "" : "Escribe tu nombre.") && ok;
+    ok = marcar("correo", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo) ? "" : "Falta un correo válido, con @ y dominio.") && ok;
+    ok = marcar("mensaje", mensaje.length >= 10 ? "" : "Cuéntanos un poco más (mínimo 10 caracteres).") && ok;
+    return ok;
+  }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if(!validar()){
+      var primero = form.querySelector(".campo.malo input, .campo.malo textarea, .campo.malo select");
+      if(primero) primero.focus();
+      return;
+    }
+    var nombre = document.getElementById("nombre").value.trim().split(" ")[0];
+    var tema = document.getElementById("tema");
+    var etiqueta = tema.options[tema.selectedIndex].text.toLowerCase();
+    textoConfirma.textContent = "Gracias, " + nombre + ". Anotamos tu interés en \u201C" + etiqueta +
+      "\u201D. Te escribimos al correo en un día hábil para coordinar la primera charla de 20 minutos.";
+    form.classList.add("oculto");
+    confirmacion.classList.add("visible");
+    confirmacion.focus();
+  });
+
+  document.getElementById("btnOtro").addEventListener("click", function(){
+    form.reset();
+    ["nombre","correo","mensaje"].forEach(function(id){ marcar(id, ""); });
+    confirmacion.classList.remove("visible");
+    form.classList.remove("oculto");
+    document.getElementById("nombre").focus();
+  });
+})();
+</script>
+</body>
+</html>
